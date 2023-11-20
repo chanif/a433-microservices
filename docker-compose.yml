@@ -1,0 +1,21 @@
+# Menggunakan Docker Compose versi 2 atau lebih.
+version: '2'
+
+services:
+  # Service untuk aplikasi item-app
+  item-app:
+    image: ghcr.io/chanif/item-app:v1
+    ports:
+      - "80:8080"  # Memetakan port 80 di host ke port 8080 di kontainer
+    depends_on:
+      - item-db  # Menjamin bahwa item-db berjalan sebelum item-app
+    restart: always  # Mengatur kebijakan restart kontainer menjadi selalu
+
+  # Service untuk database item-db
+  item-db:
+    image: mongo:3
+    volumes:
+      - app-db:/data/db  # Menggunakan volume bernama app-db untuk menyimpan data database
+
+volumes:
+  app-db:  # Definisi volume app-db
