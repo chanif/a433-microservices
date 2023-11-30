@@ -1,4 +1,4 @@
-name: CI for karsajobs-ui  # Define a descriptive name for this GitHub Actions workflow
+name: CI for karsajobs-ui  # lalala
 
 on:
   push:
