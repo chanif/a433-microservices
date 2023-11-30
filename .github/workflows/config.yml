@@ -1,0 +1,28 @@
+name: CI for karsajobs  # Descriptive name for your CI workflow
+
+on:
+  push:
+    branches:
+      - karsajobs  # Trigger the workflow only on pushes to the 'karsajobs' branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu runner for this job
+
+    steps:
+      - name: Checkout Repository  # Checkout the Git repository
+        uses: actions/checkout@v2
+
+      - name: Install and Run Hadolint  # Install and run Hadolint to lint Dockerfile
+        run: |
+          wget -O hadolint https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
+          chmod +x hadolint
+          ./hadolint Dockerfile
+
+      - name: Run Unit Tests  # Run unit tests for the code
+        run: go test -v -short --count=1 $(go list ./...)
+
+      - name: Build and Push Docker Image  # Build and push a Docker image
+        run: |
+          export GH_PACKAGES_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+          bash build_push_image_karsajobs.sh
