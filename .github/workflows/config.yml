@@ -1,0 +1,25 @@
+name: CI for karsajobs-ui  # Define a descriptive name for this GitHub Actions workflow
+
+on:
+  push:
+    branches:
+      - karsajobs-ui  # Trigger this workflow on pushes to the 'karsajobs-ui' branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Specify the operating system for this job
+
+    steps:
+      - name: Checkout Repository  # Step to checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Install and Run Hadolint  # Step to install Hadolint and run it on Dockerfile
+        run: |
+          wget -O hadolint https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
+          chmod +x hadolint
+          ./hadolint Dockerfile
+
+      - name: Build and Push Docker Image  # Step to build and push a Docker image
+        run: |
+          export GH_PACKAGES_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+          bash build_push_image_karsajobs_ui.sh
